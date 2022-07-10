@@ -1,3 +1,4 @@
+from operator import truediv
 import os as os
 import random
 
@@ -10,9 +11,19 @@ def clear(): return os.system("cls")
 
 def words_ext():
     with open("./txt/words.txt", "r", encoding="utf-8") as f:
+        Validation_counter = 0
         for line in f:
-            words.append(line.strip())
-            
+            for i in line:
+                validation = str.isalnum(i)
+                if validation == True:
+                    continue
+                else:
+                    Validation_counter + 1
+                    break
+            if Validation_counter == 0:
+                words.append(line.strip())
+            else:
+                continue
 
 def random_word():
     word = random.choice(words)
