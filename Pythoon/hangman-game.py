@@ -1,7 +1,9 @@
 from operator import truediv
 import os as os
 import random
+import re
 
+string_check = re.compile("[@_!#$%^&*()<>?/\|}{~:]")
 words = []
 word = []
 
@@ -32,8 +34,12 @@ def random_word():
 
 def run():
     clear()
-    words_ext()
-    random_word()
+    try:
+        start = input(int("Bienvenido a "))
+        words_ext()
+        random_word()
+    except ValueError:
+        print("Solo puedes poner el numero de la opción")
 
 
 if __name__ == "__main__":
