@@ -21,9 +21,21 @@ def words_ext():
                 continue
 
 def setup():
-    global word
+    global word, wordScreen
     word = random.choice(words)
-    
+    wordScreen = word
+    for i in word:
+        wordScreen = wordScreen.replace(i, "_ ")
+
+
+def game():
+    for i in range(2000):
+        word = "abecedario"
+        letter = str(input("Ingrese la letra \n"))
+        global pos
+        pos = [n for n,char in enumerate(word) if char == letter]
+
+
 
 
 
@@ -36,8 +48,10 @@ def run():
         clear()
         words_ext()
         setup()
-        global inputword
-        inputword = str()
+        game()
+        print(pos)
+
+
 
 
 if __name__ == "__main__":
