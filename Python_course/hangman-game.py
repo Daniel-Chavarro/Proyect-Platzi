@@ -5,8 +5,8 @@ import re
 
 string_check = re.compile("[@_!#$%^&*()<>?/\|}{~:]")
 words = []
-
-
+liveCounter = 3
+validate = []
 
 clear = lambda:os.system("cls")
 
@@ -21,19 +21,40 @@ def words_ext():
                 continue
 
 def setup():
-    global word, wordScreen
+    global word, wordAnonym
     word = random.choice(words)
-    wordScreen = word
+    word = "abecedario"
+    wordAnonym = word
     for i in word:
-        wordScreen = wordScreen.replace(i, "_ ")
+        wordAnonym = wordAnonym.replace(i, "_")
+        
+
+
 
 
 def game():
+    wordScreen = wordAnonym
+    liveCounterScreen = liveCounter
     for i in range(2000):
-        word = "abecedario"
-        letter = str(input("Ingrese la letra \n"))
-        global pos
-        pos = [n for n,char in enumerate(word) if char == letter]
+        if wordScreen != word:
+            letter = str(input("Ingrese la letra \n"))
+            global pos
+            pos = [n for n,char in enumerate(word) if char == letter]
+            if pos != []:
+                for p in pos:
+                    wordScreen = wordScreen[:p]+letter+wordScreen[p+1:]
+                pos = None
+                print(wordScreen)
+            else:
+                print("No hay palabra")
+                liveCounterScreen = liveCounterScreen - 1
+        elif liveCounterScreen == 0:
+            print("Perdiste")
+            break
+
+        else:
+            print("Ganaste")
+            break
 
 
 
@@ -49,8 +70,6 @@ def run():
         words_ext()
         setup()
         game()
-        print(pos)
-
 
 
 
