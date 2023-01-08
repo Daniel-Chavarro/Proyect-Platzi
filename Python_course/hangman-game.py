@@ -2,75 +2,70 @@ from operator import truediv
 import os as os
 import random
 import re
+import time
 
 string_check = re.compile("[@_!#$%^&*()<>?/\|}{~:]")
-words = []
-liveCounter = 3
 validate = []
 
-clear = lambda:os.system("cls")
+
+def clear(): return os.system("cls")
 
 
-
-def words_ext():
-    with open("./txt/words.txt", "r", encoding="utf-8") as f:
+def dataImport(filepath="./txt/words.txt"):
+    words = []
+    with open(filepath, "r", encoding="utf-8") as f:
         for line in f:
-            if (string_check.search(line) == None): 
-                words.append(line.strip())
-            else:
-                continue
-
-def setup():
-    global word, wordAnonym
-    word = random.choice(words)
-    word = "abecedario"
-    wordAnonym = word
-    for i in word:
-        wordAnonym = wordAnonym.replace(i, "_")
-        
-
-
-
-
-def game():
-    wordScreen = wordAnonym
-    liveCounterScreen = liveCounter
-    for i in range(2000):
-        if wordScreen != word:
-            letter = str(input("Ingrese la letra \n"))
-            global pos
-            pos = [n for n,char in enumerate(word) if char == letter]
-            if pos != []:
-                for p in pos:
-                    wordScreen = wordScreen[:p]+letter+wordScreen[p+1:]
-                pos = None
-                print(wordScreen)
-            else:
-                print("No hay palabra")
-                liveCounterScreen = liveCounterScreen - 1
-        elif liveCounterScreen == 0:
-            print("Perdiste")
-            break
-
-        else:
-            print("Ganaste")
-            break
-
-
-
-
+            if (string_check.search(line) == None):
+                words.append(line.strip().upper())
+    return words
 
 
 def run():
-    clear()
-    start = int(input("Bienvenido a el Ahorcado\nEscribe 1 para iniciar \n"))
-    assert start ==1, "Solo puedes la opcion marcada"
-    if start ==1 :
-        clear()
-        words_ext()
-        setup()
-        game()
+    liveCounter = 3
 
+    clear()
+    data: list = dataImport(filepath="./txt/words.txt")
+    print("Importacion Exitosa")
+    time.sleep(1)
+    clear()
+    chosenWord = random.choice(data)
+    chosenWordList = [letter for letter in chosenWord]
+    wordScreen = ["_"] * len(chosenWordList)
+    chosenWordDict = {}
+
+    for idx, letterword in enumerate(chosenWord):
+        if not chosenWordDict.get(letterword):
+            chosenWordDict[letterword] = []
+
+        chosenWordDict[letterword].append(idx)
+
+    # Ciclo true
+    while True:
+        clear()
+        print("Adivina la palabra!")
+        for element in wordScreen:
+            print(element + " ", end="")
+
+        print("\n")
+        userInput = str(input("Ingresa la letra \n")).strip().upper()
+        assert userInput.isalpha(), "Solo puedes poner letras"
+
+        if userInput in chosenWordList:
+            for idx in chosenWordDict[userInput]:
+                wordScreen[idx] = userInput
+        else:
+            liveCounter = liveCounter - 1
+            print("No hay letra en la palabra")
+            time.sleep(1.5)
+
+        if "_" not in wordScreen:
+            print("Ganaste, la palabra era: " + chosenWord)
+            break
+
+        if liveCounter == 0:
+            print("Perdiste, la palabra era: " + chosenWord)
+            time.sleep(3)
+            break
 
 
 if __name__ == "__main__":
